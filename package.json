@@ -1,0 +1,26 @@
+{
+  "name": "js-play",
+  "version": "1.0.0",
+  "description": "🔫 玩 JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dengwenj/js-play.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dengwenj/js-play/issues"
+  },
+  "homepage": "https://github.com/dengwenj/js-play#readme",
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  }
+}
