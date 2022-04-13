@@ -47,3 +47,12 @@ console.log(obj) // {dwj: 'dengwj'}
 setTimeout(() => {
   console.log('回调函数')
 }, 1000)
+
+/**
+ * 匿名函数自调用
+ *  作用：不会污染全局命名空间, 用他来编写 js 模块
+ */
+(function () {
+  var a = 1
+  console.log('匿名函数自调用', a)
+})()
