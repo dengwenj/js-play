@@ -26,3 +26,15 @@ fun.foo()
 fun.foo2()
 fun.toString()
 fun.foo3
+
+// 函数的显式原型指向的对象默认是空的 Object 实例对象（但 Object 构造函数不满足）
+console.log(Fun.prototype instanceof Object) // true
+console.log(Object.prototype instanceof Object) // false
+console.log(Function.prototype instanceof Object) // true
+console.log(Function instanceof Object) // true
+
+// 所有函数都是 Function 的实例（包括 Function）
+console.log(Function.__proto__ === Function.prototype) // true
+
+// Object 的原型对象是原型链尽头
+console.log(Object.prototype.__proto__) // null 
