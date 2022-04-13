@@ -34,4 +34,4 @@ const dwj = 'dengnwj'
 const age = 22
 obj[dwj] = dwj
 obj[age] = age
-console.log(obj)
+console.log(obj) // {22: 22, dwj-ww: 'dwjww', dengnwj: 'dengnwj'}
