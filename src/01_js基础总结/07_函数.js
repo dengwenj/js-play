@@ -31,3 +31,19 @@ function bar() {
 }
 bar.call(obj) // 可以让一个函数成为指定任意对象的方法进行调用 -> obj.bar()
 console.log(obj) // {dwj: 'dengwj'}
+
+/**
+ * 什么是回调函数
+ *  自己定义的
+ *  自己没有调用
+ *  最终他执行了
+ * 
+ * 常见的回调函数
+ *  dom 事件
+ *  定时器
+ *  ajax 请求
+ *  等等
+ */
+setTimeout(() => {
+  console.log('回调函数')
+}, 1000)
