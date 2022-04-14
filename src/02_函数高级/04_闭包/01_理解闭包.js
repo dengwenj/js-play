@@ -11,7 +11,6 @@
 function foo() {
   var a = 1
 
-  // 执行函数定义就会产生闭包，不用调用内部函数
   function bar() {
     console.log(a)
   }
