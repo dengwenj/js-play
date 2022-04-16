@@ -113,6 +113,12 @@ class DWJPromise {
       }
     })
   }
+
+  static reject(value) {
+    return new DWJPromise((resolve, reject) => {
+      reject(value)
+    })
+  }
 }
 
 /**
