@@ -99,22 +99,36 @@ class DWJPromise {
   catch(onRejected) {
     return this.then(undefined, onRejected)
   }
+
+  static resolve(value) {
+    return new DWJPromise((resolve, reject) => {
+      if (value instanceof DWJPromise) {
+        value.then((res) => {
+          resolve(res)
+        }, (reason) => {
+          reject(reason)
+        })
+      } else {
+        resolve(value)
+      }
+    })
+  }
 }
 
 /**
  * 测试
  */
-const p = new DWJPromise((resolve, reject) => {
-  // setTimeout(() => {
-  //   resolve('成功1111')
-  // }, 1000)
+// const p = new DWJPromise((resolve, reject) => {
+//   // setTimeout(() => {
+//   //   resolve('成功1111')
+//   // }, 1000)
 
-  reject('失败')
-  // resolve('成功')
+//   reject('失败')
+//   // resolve('成功')
   
-  // throw '错误'
-})
-console.log(p)
+//   // throw '错误'
+// })
+// console.log(p)
 
 // const p1 = p.then((res) => {
 //   console.log(res)
@@ -127,10 +141,18 @@ console.log(p)
 // })
 // console.log(p1)
 
-p.catch((res) => {
-  console.log(res);
-})
+// p.catch((res) => {
+//   console.log(res)
+// })
 
+const p3 = DWJPromise.resolve(new DWJPromise((resolve, reject) => {
+  // reject('11111111')
+  // resolve('0')
+  setTimeout(() => {
+    resolve('sss')
+  }, 1000)
+}))
+console.log(p3);
 // this.callbackRR = [] 写成数组都会调用，不会覆盖
 // p.then((res) => {
 //   console.log(res)
