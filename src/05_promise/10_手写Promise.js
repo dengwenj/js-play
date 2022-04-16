@@ -125,11 +125,11 @@ class DWJPromise {
       const arr = []
       let count = 0
 
-      for (const item of promiseList) {
-        if (item instanceof DWJPromise) {
-          item.then((res) => {
-            arr[count] = res
+      for (let i = 0; i < promiseList.length; i++) {
+        if (promiseList[i] instanceof DWJPromise) {
+          promiseList[i].then((res) => {
             count++
+            arr[i] = res
             if (count === promiseList.length) {
               resovle(arr)
             }
@@ -137,6 +137,18 @@ class DWJPromise {
             reject(reason)
           })
         }
+      }
+    })
+  }
+
+  static race(promiseList) {
+    return new DWJPromise((resolve, reject) => {
+      for (let i = 0; i < promiseList.length; i++) {
+        promiseList[i].then((res) => {
+          resolve(res)
+        }, (reason) => {
+          reject(reason)
+        })
       }
     })
   }
@@ -152,7 +164,7 @@ const p1 = new DWJPromise((resolve, reject) => {
 })
 const p2 = new DWJPromise((resolve, reject) => {
   setTimeout(() => {
-    resolve('p1')
+    resolve('p2')
   }, 5000);
 })
 const p3 = new DWJPromise((resolve, reject) => {
