@@ -2,4 +2,5 @@
 // import './02_函数高级'
 // import './03_对象高级'
 // import './04_es5'
-import './面试题'
+// import './面试题'
+import './05_promise'
