@@ -2,6 +2,28 @@ const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
 const REJECTED = 'rejected'
 
+function handleResolveReject(onResolvedOrOnRejected, resolve, reject) {
+  try {
+    const res = onResolvedOrOnRejected(this.promiseResult)
+    if (res instanceof DWJPromise) {
+      res.then((res) => {
+        resolve(res)
+      }, (reason) => {
+        reject(reason)
+      })
+      // if (res.promiseState === FULFILLED) {
+      //   resolve(res.promiseResult)
+      // } else {
+      //   reject(res.promiseResult)
+      // }
+    } else {
+      resolve(res)
+    }
+  } catch (error) {
+    reject(error)
+  }
+}
+
 class DWJPromise {
   constructor(executor) {
     // 初始化状态
@@ -41,83 +63,21 @@ class DWJPromise {
   then(onResolved, onRejected) {
     return new DWJPromise((resolve, reject) => {
       if (this.promiseState === FULFILLED) {
-        try {
-          const res = onResolved(this.promiseResult)
-          if (res instanceof DWJPromise) {
-            res.then((res) => {
-              resolve(res)
-            }, (reason) => {
-              reject(reason)
-            })
-            // if (res.promiseState === FULFILLED) {
-            //   resolve(res.promiseResult)
-            // } else {
-            //   reject(res.promiseResult)
-            // }
-          } else {
-            resolve(res)
-          }
-        } catch (error) {
-          reject(error)
-        }
+        handleResolveReject.call(this, onResolved, resolve, reject)
       }
 
       if (this.promiseState === REJECTED) {
-        const res = onRejected(this.promiseResult)
-        try {
-          if (res instanceof DWJPromise) {
-            res.then((res) => {
-              resolve(res)
-            }, (reason) => {
-              reject(reason)
-            })
-            // if (res.promiseState === FULFILLED) {
-            //   resolve(res.promiseResult)
-            // } else {
-            //   reject(res.promiseResult)
-            // }
-          } else {
-            resolve(res)
-          }
-        } catch (error) {
-          reject(error)
-        }
+        handleResolveReject.call(this, onRejected, resolve, reject)
       }
 
       if (this.promiseState === PENDING) {
         // 保存回调函数
         this.callbackRR.push({
           resolved: () => {
-            try {
-              const res = onResolved(this.promiseResult)
-              if (res instanceof DWJPromise) {
-                res.then((res) => {
-                  resolve(res)
-                }, (reason) => {
-                  reject(reason)
-                })
-              } else {
-                resolve(res)
-              }
-            } catch (error) {
-              reject(error)
-            }
+            handleResolveReject.call(this, onResolved, resolve, reject)
           },
           rejected: () => {
-            try {
-              const res = onRejected(this.promiseResult)
-              if (res instanceof DWJPromise) {
-                res.then((res) => {
-                  resolve(res)
-                }, (reason) => {
-                  reject(reason)
-                })
-              } else {
-                resolve(res)
-              }
-            } catch (error) {
-              reject(error)
-            }
+            handleResolveReject.call(this, onRejected, resolve, reject)
           }
         })
       }
