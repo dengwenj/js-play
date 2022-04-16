@@ -3,6 +3,7 @@ p1.catch((reason) => {
   console.log(reason)
 })
  
+// 他的值无论如何都是你的传参数
 const p2 = Promise.reject(new Promise((resovle, reject) => {
   resovle('成功')
 }))
