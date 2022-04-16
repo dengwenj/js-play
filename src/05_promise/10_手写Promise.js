@@ -1,20 +1,24 @@
+const PENDING = 'pending'
+const FULFILLED = 'fulfilled'
+const REJECTED = 'rejected'
+
 class DWJPromise {
   constructor(executor) {
     // 初始化状态
-    this.promiseState = 'pending'
+    this.promiseState = PENDING
     this.promiseResult = null
 
     const resolve = (data) => {
-      if (this.promiseState === 'pending') {
-        this.promiseState = 'fulfilled'
+      if (this.promiseState === PENDING) {
+        this.promiseState = FULFILLED
         this.promiseResult = data
       }
       
     }
 
     const reject = (data) => {
-      if (this.promiseState === 'pending') {
-        this.promiseState = 'rejected'
+      if (this.promiseState === PENDING) {
+        this.promiseState = REJECTED
         this.promiseResult = data
       }
     }
@@ -27,7 +31,13 @@ class DWJPromise {
   }
 
   then(onResolved, onRejected) {
+    if (this.promiseState === FULFILLED) {
+      onResolved(this.promiseResult)
+    }
 
+    if (this.promiseState === REJECTED) {
+      onRejected(this.promiseResult)
+    }
   }
 }
 
