@@ -1,16 +1,22 @@
 class DWJPromise {
   constructor(executor) {
+    // 初始化状态
     this.promiseState = 'pending'
     this.promiseResult = null
 
     const resolve = (data) => {
-      this.promiseState = 'fulfilled'
-      this.promiseResult = data
+      if (this.promiseState === 'pending') {
+        this.promiseState = 'fulfilled'
+        this.promiseResult = data
+      }
+      
     }
 
     const reject = (data) => {
-      this.promiseState = 'rejected'
-      this.promiseResult = data
+      if (this.promiseState === 'pending') {
+        this.promiseState = 'rejected'
+        this.promiseResult = data
+      }
     }
 
     try {
@@ -26,8 +32,10 @@ class DWJPromise {
 }
 
 const p = new DWJPromise((resolve, reject) => {
-  // resolve('成功')
-  throw '错误'
+  reject('失败')
+  resolve('成功')
+  
+  // throw '错误'
 })
 console.log(p)
 
