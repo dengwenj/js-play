@@ -15,7 +15,7 @@ class DWJPromise {
         this.promiseResult = data
 
         this.callbackRR.forEach((item) => {
-          item.onResolved(data)
+          item.resolved(data)
         })
       }
     }
@@ -26,7 +26,7 @@ class DWJPromise {
         this.promiseResult = data
 
         this.callbackRR.forEach((item) => {
-          item.onRejected(data)
+          item.rejected(data)
         })
       }
     }
@@ -41,46 +41,84 @@ class DWJPromise {
   then(onResolved, onRejected) {
     return new DWJPromise((resolve, reject) => {
       if (this.promiseState === FULFILLED) {
-        const res = onResolved(this.promiseResult)
-        if (res instanceof DWJPromise) {
-          res.then((res) => {
+        try {
+          const res = onResolved(this.promiseResult)
+          if (res instanceof DWJPromise) {
+            res.then((res) => {
+              resolve(res)
+            }, (reason) => {
+              reject(reason)
+            })
+            // if (res.promiseState === FULFILLED) {
+            //   resolve(res.promiseResult)
+            // } else {
+            //   reject(res.promiseResult)
+            // }
+          } else {
             resolve(res)
-          }, (reason) => {
-            reject(reason)
-          })
-          // if (res.promiseState === FULFILLED) {
-          //   resolve(res.promiseResult)
-          // } else {
-          //   reject(res.promiseResult)
-          // }
-        } else {
-          resolve(res)
+          }
+        } catch (error) {
+          reject(error)
         }
       }
 
       if (this.promiseState === REJECTED) {
         const res = onRejected(this.promiseResult)
-        if (res instanceof DWJPromise) {
-          res.then((res) => {
+        try {
+          if (res instanceof DWJPromise) {
+            res.then((res) => {
+              resolve(res)
+            }, (reason) => {
+              reject(reason)
+            })
+            // if (res.promiseState === FULFILLED) {
+            //   resolve(res.promiseResult)
+            // } else {
+            //   reject(res.promiseResult)
+            // }
+          } else {
             resolve(res)
-          }, (reason) => {
-            reject(reason)
-          })
-          // if (res.promiseState === FULFILLED) {
-          //   resolve(res.promiseResult)
-          // } else {
-          //   reject(res.promiseResult)
-          // }
-        } else {
-          resolve(res)
+          }
+        } catch (error) {
+          reject(error)
         }
       }
 
       if (this.promiseState === PENDING) {
         // 保存回调函数
         this.callbackRR.push({
-          onResolved,
-          onRejected
+          resolved: () => {
+            try {
+              const res = onResolved(this.promiseResult)
+              if (res instanceof DWJPromise) {
+                res.then((res) => {
+                  resolve(res)
+                }, (reason) => {
+                  reject(reason)
+                })
+              } else {
+                resolve(res)
+              }
+            } catch (error) {
+              reject(error)
+            }
+          },
+          rejected: () => {
+            try {
+              const res = onRejected(this.promiseResult)
+              if (res instanceof DWJPromise) {
+                res.then((res) => {
+                  resolve(res)
+                }, (reason) => {
+                  reject(reason)
+                })
+              } else {
+                resolve(res)
+              }
+            } catch (error) {
+              reject(error)
+            }
+          }
         })
       }
     })
@@ -91,12 +129,12 @@ class DWJPromise {
  * 测试
  */
 const p = new DWJPromise((resolve, reject) => {
-  // setTimeout(() => {
-  //   resolve('成功1111')
-  // }, 1000)
+  setTimeout(() => {
+    resolve('成功1111')
+  }, 1000)
 
   // reject('失败')
-  resolve('成功')
+  // resolve('成功')
   
   // throw '错误'
 })
@@ -104,9 +142,11 @@ console.log(p)
 
 const p1 = p.then((res) => {
   console.log(res)
-  throw 'ggg'
+  // return 111111111111
   return new DWJPromise((resolve, reject) => {
-    resolve('new promise')
+    setTimeout(() => {
+      resolve('new promise')
+    }, 3000);
   })
 }, (reason) => {
   console.log(reason)
