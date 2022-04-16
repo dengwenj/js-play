@@ -13,7 +13,11 @@ class DWJPromise {
       this.promiseResult = data
     }
 
-    executor(resolve, reject)
+    try {
+      executor(resolve, reject)
+    } catch (error) {
+      reject(error)
+    }
   }
 
   then(onResolved, onRejected) {
@@ -22,9 +26,10 @@ class DWJPromise {
 }
 
 const p = new DWJPromise((resolve, reject) => {
-  resolve('成功')
+  // resolve('成功')
+  throw '错误'
 })
-console.log(p);
+console.log(p)
 
 p.then((res) => {
   console.log(res)
