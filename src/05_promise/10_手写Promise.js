@@ -3,25 +3,27 @@ const FULFILLED = 'fulfilled'
 const REJECTED = 'rejected'
 
 function handleResolveReject(onResolvedOrOnRejected, resolve, reject) {
-  try {
-    const res = onResolvedOrOnRejected(this.promiseResult)
-    if (res instanceof DWJPromise) {
-      res.then((res) => {
+  queueMicrotask(() => {
+    try {
+      const res = onResolvedOrOnRejected(this.promiseResult)
+      if (res instanceof DWJPromise) {
+        res.then((res) => {
+          resolve(res)
+        }, (reason) => {
+          reject(reason)
+        })
+        // if (res.promiseState === FULFILLED) {
+        //   resolve(res.promiseResult)
+        // } else {
+        //   reject(res.promiseResult)
+        // }
+      } else {
         resolve(res)
-      }, (reason) => {
-        reject(reason)
-      })
-      // if (res.promiseState === FULFILLED) {
-      //   resolve(res.promiseResult)
-      // } else {
-      //   reject(res.promiseResult)
-      // }
-    } else {
-      resolve(res)
+      }
+    } catch (error) {
+      reject(error)
     }
-  } catch (error) {
-    reject(error)
-  }
+  })
 }
 
 class DWJPromise {
@@ -37,7 +39,9 @@ class DWJPromise {
         this.promiseResult = data
 
         this.callbackRR.forEach((item) => {
-          item.resolved(data)
+          queueMicrotask(() => {
+            item.resolved(data)
+          })
         })
       }
     }
@@ -48,7 +52,9 @@ class DWJPromise {
         this.promiseResult = data
 
         this.callbackRR.forEach((item) => {
-          item.rejected(data)
+          queueMicrotask(() => {
+            item.rejected(data)
+          })
         })
       }
     }
@@ -158,21 +164,16 @@ class DWJPromise {
  * 测试
  */
 const p1 = new DWJPromise((resolve, reject) => {
+  console.log(111)
   setTimeout(() => {
-    resolve('p1')
-  }, 1000);
+    resolve('222')
+  }, 1000)
 })
-const p2 = new DWJPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('p2')
-  }, 5000);
+
+p1.then((res) => {
+  console.log(res)
 })
-const p3 = new DWJPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('p3')
-  }, 3000);
-})
-console.log(DWJPromise.all([p1, p2, p3]));
+console.log(333)
 // const p = new DWJPromise((resolve, reject) => {
 //   // setTimeout(() => {
 //   //   resolve('成功1111')
@@ -200,13 +201,13 @@ console.log(DWJPromise.all([p1, p2, p3]));
 //   console.log(res)
 // })
 
-const p4 = DWJPromise.resolve(new DWJPromise((resolve, reject) => {
-  // reject('11111111')
-  // resolve('0')
-  setTimeout(() => {
-    resolve('sss')
-  }, 1000)
-}))
+// const p4 = DWJPromise.resolve(new DWJPromise((resolve, reject) => {
+//   // reject('11111111')
+//   // resolve('0')
+//   setTimeout(() => {
+//     resolve('sss')
+//   }, 1000)
+// }))
 // console.log(p4);
 // this.callbackRR = [] 写成数组都会调用，不会覆盖
 // p.then((res) => {
