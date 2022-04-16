@@ -119,11 +119,48 @@ class DWJPromise {
       reject(value)
     })
   }
+
+  static all(promiseList) {
+    return new DWJPromise((resovle, reject) => {
+      const arr = []
+      let count = 0
+
+      for (const item of promiseList) {
+        if (item instanceof DWJPromise) {
+          item.then((res) => {
+            arr[count] = res
+            count++
+            if (count === promiseList.length) {
+              resovle(arr)
+            }
+          }, (reason) => {
+            reject(reason)
+          })
+        }
+      }
+    })
+  }
 }
 
 /**
  * 测试
  */
+const p1 = new DWJPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('p1')
+  }, 1000);
+})
+const p2 = new DWJPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('p1')
+  }, 5000);
+})
+const p3 = new DWJPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('p3')
+  }, 3000);
+})
+console.log(DWJPromise.all([p1, p2, p3]));
 // const p = new DWJPromise((resolve, reject) => {
 //   // setTimeout(() => {
 //   //   resolve('成功1111')
@@ -151,14 +188,14 @@ class DWJPromise {
 //   console.log(res)
 // })
 
-const p3 = DWJPromise.resolve(new DWJPromise((resolve, reject) => {
+const p4 = DWJPromise.resolve(new DWJPromise((resolve, reject) => {
   // reject('11111111')
   // resolve('0')
   setTimeout(() => {
     resolve('sss')
   }, 1000)
 }))
-console.log(p3);
+// console.log(p4);
 // this.callbackRR = [] 写成数组都会调用，不会覆盖
 // p.then((res) => {
 //   console.log(res)
