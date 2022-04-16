@@ -58,17 +58,24 @@ class DWJPromise {
 }
 
 const p = new DWJPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('成功1111')
-  }, 1000)
+  // setTimeout(() => {
+  //   resolve('成功1111')
+  // }, 1000)
 
-  // reject('失败')
+  reject('失败')
   // resolve('成功')
   
   // throw '错误'
 })
 console.log(p)
 
+p.then((res) => {
+  console.log(res)
+}, (reason) => {
+  console.log(reason)
+})
+
+// this.callbackRR = [] 写成数组都会调用，不会覆盖
 p.then((res) => {
   console.log(res)
 }, (reason) => {
