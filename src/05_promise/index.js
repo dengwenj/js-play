@@ -5,4 +5,5 @@
 // import './07_promise.then返回值'
 // import './08_异常穿透'
 // import './09_中断promise链'
-import './10_手写Promise'
+// import './10_手写Promise'
+import './11_async函数'
